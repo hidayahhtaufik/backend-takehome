@@ -1,12 +1,11 @@
 package config
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
-	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func getenv(k, d string) string {
@@ -16,22 +15,15 @@ func getenv(k, d string) string {
 	return d
 }
 
-func OpenDB() (*sql.DB, error) {
+func OpenGorm() (*gorm.DB, error) {
 	user := getenv("DB_USER", "root")
 	pass := getenv("DB_PASS", "abc123")
-	host := getenv("DB_HOST", "db")
+	host := getenv("DB_HOST", "db") // service name di compose
 	port := getenv("DB_PORT", "3306")
 	name := getenv("DB_NAME", "appdb")
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&charset=utf8mb4&loc=Local",
 		user, pass, host, port, name)
 
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		return nil, err
-	}
-	db.SetConnMaxLifetime(3 * time.Minute)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
-	return db, db.Ping()
+	return gorm.Open(mysql.Open(dsn), &gorm.Config{})
 }
