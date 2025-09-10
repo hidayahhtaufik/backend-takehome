@@ -9,5 +9,5 @@ type User struct {
 	PasswordHash string    `json:"-"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
-	Blogs        []Blog    `json:"-" gorm:"foreignKey:AuthorID;constraint:OnDelete:CASCADE;"`
+	Posts        []Post    `json:"-" gorm:"foreignKey:AuthorID;constraint:OnDelete:CASCADE;"`
 }

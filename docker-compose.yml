@@ -2,6 +2,8 @@ services:
   app:
     build:
       context: .
+    env_file:
+      - ./.env
     environment:
       GOMODCACHE: /go/src/app/.modcache
       GOCACHE: /go/src/app/.cache
